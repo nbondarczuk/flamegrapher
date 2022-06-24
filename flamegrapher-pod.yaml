@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: flamegrapher
+  namespace: trace
+spec:
+  volumes:
+  - name: flamegraph
+    hostPath:
+      path: /var/run/flamegraph
+  containers:
+  - name: flamegrapher
+    image: flamegrapher
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 0
+    command: ["bash", "-c"]
+    args:
+      - "make-flamegraph.sh"
+    volumeMounts:
+      - name: flamegraph
+        mountPath: /flamegraph
+    resources:
+      limits:
+        cpu: "1"
+      requests:
+        cpu: "1"
+  nodeSelector:
+    kubernetes.io/hostname: silpixa00401268
+    
